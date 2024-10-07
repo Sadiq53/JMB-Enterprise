@@ -11,6 +11,7 @@ const generateFileName = require('randomstring');
 const { exec } = require('child_process');
 const multerS3 = require('multer-s3');
 const AWS = require('@aws-sdk/client-s3');
+const winston = require('winston')
 const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
 // ---------------------------------File Reading-----------------------------------------
@@ -73,6 +74,34 @@ const storage = multerS3({
   }
 });
 
+// // Multer instance with limits and file type filter
+// const upload = multer({
+//   storage: storage,
+//   limits: { fileSize: 10 * 1024 * 1024 }, // Limit to 10MB
+//   fileFilter: (req, file, cb) => {
+//     // Allow only .xlsx and .csv file types
+//     const allowedTypes = [
+//       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+//       'text/csv'
+//     ];
+//     if (allowedTypes.includes(file.mimetype)) {
+//       cb(null, true);
+//     } else {
+//       cb(new Error('Invalid file type'), false);
+//     }
+//   }
+// });
+
+// Configure winston for logging (optional)
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(), // Log to console
+    new winston.transports.File({ filename: 'upload-errors.log' }) // Log errors to a file
+  ],
+});
+
 // Multer instance with limits and file type filter
 const upload = multer({
   storage: storage,
@@ -80,16 +109,22 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     // Allow only .xlsx and .csv file types
     const allowedTypes = [
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'text/csv'
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
+      'text/csv' // CSV
     ];
+
+    // Log the incoming file type
+    logger.info(`Incoming file type: ${file.mimetype} for file: ${file.originalname}`);
+
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
+      logger.error(`Invalid file type: ${file.mimetype} for file: ${file.originalname}`);
       cb(new Error('Invalid file type'), false);
     }
   }
 });
+
 
 //-------------------------File Saving------------------------------------
 
@@ -194,8 +229,6 @@ async function uploadFileToS3( fileKey, filePath) {
 // -------------------------ROUTING STARTS----------------------------------------------------
 
 route.post("/", upload.any(), async (req, res) => {
-  console.log("AWS_ACCESS_KEY_ID:", process.env.AWS_ACCESS_KEY_ID);
-console.log("AWS_SECRET_ACCESS_KEY:", process.env.AWS_SECRET_ACCESS_KEY);
 
   if (req.files && req.files.length > 0) {
     const { bank } = req.body;
