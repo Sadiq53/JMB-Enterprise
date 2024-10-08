@@ -18,6 +18,7 @@ const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = re
 
 // Function to read XLSX files
 function readXLSXFile(filePath) {
+  console.log(filePath)
   const workbook = xlsx.readFile(filePath);
   const sheetName = workbook.SheetNames[0]; // Assuming we want the first sheet
   const worksheet = workbook.Sheets[sheetName];
@@ -73,24 +74,6 @@ const storage = multerS3({
     cb(null, fileName);
   }
 });
-
-// // Multer instance with limits and file type filter
-// const upload = multer({
-//   storage: storage,
-//   limits: { fileSize: 10 * 1024 * 1024 }, // Limit to 10MB
-//   fileFilter: (req, file, cb) => {
-//     // Allow only .xlsx and .csv file types
-//     const allowedTypes = [
-//       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-//       'text/csv'
-//     ];
-//     if (allowedTypes.includes(file.mimetype)) {
-//       cb(null, true);
-//     } else {
-//       cb(new Error('Invalid file type'), false);
-//     }
-//   }
-// });
 
 // Configure winston for logging (optional)
 const logger = winston.createLogger({
@@ -266,6 +249,7 @@ route.post("/", upload.any(), async (req, res) => {
       if (!isDataExist) {
         // Download the file from S3
         const fileStream = await downloadFileFromS3(fileKey);
+        console.log(fileStream)
 
         // Save the file content temporarily
         const tempFilePath = path.join(uploadDir, fileKey);
@@ -345,6 +329,7 @@ route.get('/', async (req, res) => {
         const tempFilePath = path.join(uploadDir, fileKey);
         const writeStream = fs.createWriteStream(tempFilePath);
         fileStream.pipe(writeStream);
+        console.log(tempFilePath)
 
         // Return a promise that resolves when the file is written
         return new Promise((resolve, reject) => {
