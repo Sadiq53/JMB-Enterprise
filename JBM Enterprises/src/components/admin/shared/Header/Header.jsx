@@ -182,7 +182,7 @@ const Header = () => {
               </NavLink>
             </li>
             <li className="pc-item">
-              <NavLink className="pc-link list-flex" to="/delete-data">
+              <NavLink className="pc-link list-flex" to={`/delete-data/${'delete-data'}`}>
                 <img src="/assets/images/menu-icons/delete data.png" alt="Delete Data" />
                 Delete Data
               </NavLink>

@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../../shared/Header/Header'
 import { NavLink } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { resetState } from '../../../../redux/AdminDataSlice'
+import DataListContent from '../../shared/DataListContent/DataListContent'
 
 const Dashboard = () => {
 
   const memberData = useSelector(state => state.AdminDataSlice.member);
   const bankData = useSelector(state => state.AdminDataSlice.bank);
   const fileData = useSelector(state => state.AdminDataSlice.file);
+  const isError = useSelector(state => state.AdminDataSlice.isError);
   const [checkRelease, setCheckRelease] = useState([])
   const [checkHold, setCheckHold] = useState([])
   const [checkYard, setCheckYard] = useState([])
+  const dispatch = useDispatch();
 
   useEffect(()=>{
     let holdValues = []
@@ -45,6 +49,8 @@ const Dashboard = () => {
     setCheckYard(yardValues)
   }, [fileData])
 
+  useEffect(()=>{isError ? dispatch(resetState()) : null}, [isError])
+
   return (
     <>
 
@@ -53,7 +59,7 @@ const Dashboard = () => {
     <div className="container my-5">
     <div className="row">
   {/* [ Row 1 ] start */}
-  <div className="col-sm-6 col-xl-4">
+  <div className="col-sm-6 col-xl-2">
     <NavLink to='/members-list'>
     <div className="card statistics-card-1">
       <div className="card-header d-flex align-items-center justify-content-between py-3">
@@ -84,7 +90,7 @@ const Dashboard = () => {
     </div>
     </NavLink>
   </div>
-  <div className="col-sm-6 col-xl-4">
+  <div className="col-sm-6 col-xl-2">
     <NavLink to='/bank-list'>
     <div className="card statistics-card-1">
       <div className="card-header d-flex align-items-center justify-content-between py-3">
@@ -115,8 +121,8 @@ const Dashboard = () => {
     </div>
     </NavLink>
   </div>
-  <div className="col-sm-6 col-xl-4">
-    <NavLink to='/data-list'>
+  <div className="col-sm-6 col-xl-2">
+    <NavLink to={`/delete-data/${'show-data'}`}>
     <div className="card statistics-card-1">
       <div className="card-header d-flex align-items-center justify-content-between py-3">
         <h5>File Uploads</h5>
@@ -149,7 +155,7 @@ const Dashboard = () => {
   {/* [ Row 1 ] end */}
 
   {/* [ Row 2 ] start */}
-  <div className="col-sm-6 col-xl-4">
+  <div className="col-sm-6 col-xl-2">
     <NavLink to={`/action/${'Hold'}`}>
     <div className="card statistics-card-1">
       <div className="card-header d-flex align-items-center justify-content-between py-3">
@@ -180,7 +186,7 @@ const Dashboard = () => {
     </div>
     </NavLink>
   </div>
-  <div className="col-sm-6 col-xl-4">
+  <div className="col-sm-6 col-xl-2">
     <NavLink to={`/action/${'Release'}`}>
     <div className="card statistics-card-1">
       <div className="card-header d-flex align-items-center justify-content-between py-3">
@@ -211,7 +217,7 @@ const Dashboard = () => {
     </div>
     </NavLink>
   </div>
-  <div className="col-sm-6 col-xl-4">
+  <div className="col-sm-6 col-xl-2">
     <NavLink to={`/action/${'In Yard'}`}>
     <div className="card statistics-card-1">
       <div className="card-header d-flex align-items-center justify-content-between py-3">
@@ -246,6 +252,8 @@ const Dashboard = () => {
   
 </div>
     </div>
+    
+    <DataListContent props={'dashboard'} />
 
 </>
 

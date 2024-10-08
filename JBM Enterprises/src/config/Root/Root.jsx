@@ -47,7 +47,7 @@ import ActionList from '../../components/admin/feature/Manage-Data/ActionList'
             element : <ManageDashTags />
         },
         {
-            path : 'delete-data',
+            path : 'delete-data/:route',
             element : <DeleteData />
         },
         {

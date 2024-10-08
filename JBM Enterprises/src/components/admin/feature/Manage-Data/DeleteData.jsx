@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import Header from '../../shared/Header/Header'
 import { useDispatch, useSelector } from 'react-redux';
 import { handleDeleteFile, resetState } from '../../../../redux/AdminDataSlice';
+import { useParams } from 'react-router-dom'
 import DeleteDataModal from './DeleteDataModal';
 
 const DeleteData = () => {
 
   const dispatch = useDispatch();
+  const getRoute = useParams();
   const [showAlert, setShowAlert] = useState(false)
   const [alertMsg, setAlertMsg] = useState("");
   const RawFileData = useSelector(state => state.AdminDataSlice?.file);
@@ -103,7 +105,9 @@ const showPopUp = () =>{
         <div className="col-md-12">
           <div className="card">
             <div className="card-header d-flex justify-content-between align-items-center">
-              <h3 className='font-size-18'>Delete Data By List</h3>
+              <h3 className='font-size-18'>{
+                  getRoute?.route === 'delete-data' ? 'Delete Data By List' : 'All Files'
+                }</h3>
               <button type='button' onClick={()=>{handleCheckboxChange('bulk'), showPopUp()}} className='btn btn-danger '> <i class="fa-solid fa-trash-can"></i> Bulk Delete</button>
             </div>
             <button ref={resetForm} style={{visibility : "hidden"}} type='reset'></button>

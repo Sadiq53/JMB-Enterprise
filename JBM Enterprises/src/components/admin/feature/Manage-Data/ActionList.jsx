@@ -85,7 +85,7 @@ const ActionList = () => {
           <div className="col-md-12">
             <div className="card">
               <div className="card-header">
-                <h3>Data List</h3>
+                <h3>{getAction?.action}</h3>
               </div>
               <div className="card-body">
                 <div className="dt-responsive table-responsive overflow-hidden ">
