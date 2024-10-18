@@ -1,5 +1,9 @@
+import { API_URL } from '../util/API_URL'
+
+
+
 const handleGetData = async() =>{
-    const response = await fetch('https://jmb-server.onrender.com/admin/data', {
+    const response = await fetch(`${API_URL}/data`, {
         method: "GET"
     });
     if (!response.ok) {
@@ -11,7 +15,7 @@ const handleGetData = async() =>{
 }
 
 const handleGetUserData = async(id) =>{
-    const response = await fetch(`https://jmb-server.onrender.com/admin/login/:${id}`, {
+    const response = await fetch(`${API_URL}/login/:${id}`, {
         method : "GET"
     })
     if (!response.ok) {

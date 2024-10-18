@@ -16,7 +16,7 @@ const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = re
 
 // Function to read XLSX files
 function readXLSXFile(filePath) {
-  console.log(filePath)
+  // console.log(filePath)
   const workbook = xlsx.readFile(filePath);
   const sheetName = workbook.SheetNames[0]; // Assuming we want the first sheet
   const worksheet = workbook.Sheets[sheetName];
@@ -111,12 +111,13 @@ const upload = multer({
 
 //-------------------To add the FILENAME and ACTION property in the file using python-----------------
 
-// Path to the Python script
-const scriptPath = path.join(__dirname, '..', 'assets', 'scripts', 'update_xlsx.py');
 
 // Function to run Python script
-function addPropertyUsingPython(filePath, filename, bank) {
+function addPropertyUsingPython(filePath, filename, bank, pathToFunc) {
   return new Promise((resolve, reject) => {
+    // Path to the Python script
+    const scriptPath = pathToFunc
+    console.log("I am File Path",scriptPath)
     // Use double quotes around paths to handle spaces and special characters
     const command = `python "${scriptPath}" "${filePath}" "${filename}" "${bank}"`;
     
@@ -136,9 +137,11 @@ function addPropertyUsingPython(filePath, filename, bank) {
 //-------------------To Update the Action in the file using python-----------------
 
 // Function to run Python script
-function runPythonScript(filePath, agreementNumber, actionStatus, actionTime) {
+function runPythonScript(filePath, agreementNumber, actionStatus, actionTime, pathToFunc) {
   return new Promise((resolve, reject) => {
-    const scriptPath = path.join(__dirname, '..', 'assets', 'scripts', 'updateAction.py');
+    const scriptPath = pathToFunc
+    console.log("I am File Path",scriptPath)
+    // Use double quotes around paths to handle spaces and special characters
     const command = `python "${scriptPath}" "${filePath}" "${agreementNumber}" "${actionStatus}" "${actionTime}"`;
     
     exec(command, (error, stdout, stderr) => {
@@ -247,15 +250,21 @@ route.post("/", upload.any(), async (req, res) => {
       if (!isDataExist) {
         // Download the file from S3
         const fileStream = await downloadFileFromS3(fileKey);
-        console.log(fileStream)
+        // console.log(fileStream)
 
         // Save the file content temporarily
         const tempFilePath = path.join(uploadDir, fileKey);
         const writeStream = fs.createWriteStream(tempFilePath);
         fileStream.pipe(writeStream);
 
+        let pathToFunc;
+        if (path.extname(originalname) === '.xlsx') {
+          pathToFunc = path.join(__dirname, '..', 'assets', 'scripts', 'update_xlsx.py');
+        } else if (path.extname(originalname) === '.csv') {
+          pathToFunc = path.join(__dirname, '..', 'assets', 'scripts', 'update_csv.py');
+        }
         // Run Python script to update the XLSX file
-        await addPropertyUsingPython(tempFilePath, originalname, bank);
+        await addPropertyUsingPython(tempFilePath, originalname, bank, pathToFunc);
         
         // saving the updated file back to cloud
         await uploadFileToS3(fileKey, tempFilePath);
@@ -409,8 +418,16 @@ route.put("/", async (req, res) => {
 
     writeStream.on('finish', async () => {
       try {
+
+        let pathToFunc;
+        if (path.extname(fileKey) === '.xlsx') {
+          pathToFunc = path.join(__dirname, '..', 'assets', 'scripts', 'updateAction.py');
+        } else if (path.extname(fileKey) === '.csv') {
+          pathToFunc = path.join(__dirname, '..', 'assets', 'scripts', 'updateAction_csv.py');
+        }
+
         // Run Python script to update the action in the file
-        await runPythonScript(filePath, agreementNumber, actionStatus, actionTime);
+        await runPythonScript(filePath, agreementNumber, actionStatus, actionTime, pathToFunc);
 
          // saving the updated file back to cloud
         await uploadFileToS3(fileKey, filePath);
