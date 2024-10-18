@@ -80,7 +80,9 @@ const AddData = () => {
       // console.log(isError)
       if(isProcessing) {
         setSpinner(true)
-      } 
+      } else {
+        setSpinner(false)
+      }
     }, [isProcessing])
     
     useEffect(()=>{
