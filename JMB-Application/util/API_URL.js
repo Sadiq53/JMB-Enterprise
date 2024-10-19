@@ -1,3 +1,3 @@
-const API_URL = 'https://dolphin-app-i8qlu.ondigitalocean.app/admin'
+const API_URL = 'http://44.243.42.172:8080/admin'
 
 export {API_URL}
