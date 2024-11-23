@@ -7,6 +7,7 @@ import AddDataSchema from '../../../../schema/AddDataSchema'
 import { handleData, resetState } from '../../../../redux/AdminDataSlice';
 import { API_URL } from '../../../../util/API_URL';
 import socket from '../../../../util/Socket'
+import DashboardTags from '../../shared/DashboardTags/DashboardTags';
 
 
 const AddData = () => {
@@ -107,6 +108,7 @@ const AddData = () => {
   return (
     <>
         <Header />
+        <DashboardTags />
 
         <div className="container my-5" >
       <div className="row">

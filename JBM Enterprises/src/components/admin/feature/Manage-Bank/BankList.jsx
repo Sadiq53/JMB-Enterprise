@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Header from '../../shared/Header/Header'
 import {useSelector} from 'react-redux'
 import DeleteBankModal from './DeleteBankModal';
+import DashboardTags from '../../shared/DashboardTags/DashboardTags';
 
 const BankList = () => {
 
@@ -39,6 +40,7 @@ const BankList = () => {
   return (
     <>
         <Header />
+      <DashboardTags />
 
         <div className="container my-5">
         <div className="row">

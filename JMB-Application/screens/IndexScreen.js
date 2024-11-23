@@ -122,121 +122,53 @@ const IndexScreen = () => {
     </TouchableOpacity>
   );
 
-  // // Function to get user location
-  // const getUserLocation = async () => {
-  //   // Request permissions
-  //   const { status } = await Location.requestForegroundPermissionsAsync();
-  //   if (status !== 'granted') {
-  //     setErrorMsg('Permission to access location was denied');
-  //     Alert.alert('Permission Denied', 'Location access is required to track your position.');
-  //     return;
-  //   }
+  // Function to get user location
+  const getUserLocation = async () => {
+    // Request permissions
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      setErrorMsg('Permission to access location was denied');
+      Alert.alert('Permission Denied', 'Location access is required to track your position.');
+      return;
+    }
 
-  //   // Get current location
-  //   const loc = await Location.getCurrentPositionAsync({});
-  //   setLocation(loc);
+    // Get current location
+    const loc = await Location.getCurrentPositionAsync({});
+    setLocation(loc);
 
-  //   // Emit the location to the server
-  //   if (loc) {
-  //     const location = {
-  //       latitude: loc.coords.latitude,
-  //       longitude: loc.coords.longitude,
-  //     }
-  //     try {
-  //               // Send via REST API
-  //               await axios.post(`${API_URL}/login/location`, { location });
-  //               // await handlePostLocation(location)
+    // Emit the location to the server
+    if (loc) {
+      const location = {
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+      }
+      try {
+                // Send via REST API
+                const ID = await AsyncStorage.getItem('UserToken');
+                await axios.post(`${API_URL}/login/location/${ID}`, { location });
+                // await handlePostLocation(location)
         
-  //               // Or use WebSocket
-  //               // socket.emit('updateLocation', location);
+                // Or use WebSocket
+                // socket.emit('updateLocation', location);
         
-  //               // console.log("Location sent to server:", location);
-  //           } catch (error) {
-  //               console.error("Error sending location to server:", error);
-  //           }
-  //   }
-  // };
+                // console.log("Location sent to server:", location);
+            } catch (error) {
+                console.error("Error sending location to server:", error);
+            }
+    }
+  };
 
-  // // Call getUserLocation when the app loads
-  // useEffect(() => {
-  //   getUserLocation();
+  // Call getUserLocation when the app loads
+  useEffect(() => {
+    getUserLocation();
 
-  //   // Track location updates in the background
-  //   const locationTracking = setInterval(() => {
-  //     getUserLocation();
-  //   }, 30000); // Update every 30 seconds
+    // Track location updates in the background
+    const locationTracking = setInterval(() => {
+      getUserLocation();
+    }, 30000); // Update every 30 seconds
 
-  //   return () => clearInterval(locationTracking); // Clear interval on unmount
-  // }, []);
-
-//   // Request permissions
-//   const requestLocationPermission = async () => {
-//     try {
-//         const permission =
-//             Platform.OS === 'ios'
-//                 ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-//                 : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-
-//         const result = await request(permission);
-
-//         if (result === RESULTS.GRANTED) {
-//           startTracking()
-//             console.log("Location permission granted");
-//         } else {
-//             Alert.alert("Permission Denied", "Cannot track location without permission.");
-//         }
-//     } catch (error) {
-//         console.error("Error requesting location permission:", error);
-//     }
-// };
-
-// // Start tracking location
-// const startTracking = () => {
-//     setIsTracking(true);
-
-//     Geolocation.watchPosition(
-//         (position) => {
-//             const { latitude, longitude } = position.coords;
-//             setLocation({ latitude, longitude });
-
-//             // Send the location to the server
-//             sendLocationToServer({ latitude, longitude });
-//         },
-//         (error) => {
-//             console.error("Error getting location:", error);
-//         },
-//         { enableHighAccuracy: true, distanceFilter: 10 } // Adjust distance filter as needed
-//     );
-// };
-
-// // Stop tracking location
-// const stopTracking = () => {
-//     setIsTracking(false);
-//     Geolocation.stopObserving();
-//     console.log("Stopped location tracking");
-// };
-
-// // Send location to server
-// const sendLocationToServer = async (location) => {
-//     try {
-//         // Send via REST API
-//         await axios.post(`${API_URL}/login/location`, { location });
-//         // await handlePostLocation(location)
-
-//         // Or use WebSocket
-//         // socket.emit('updateLocation', location);
-
-//         // console.log("Location sent to server:", location);
-//     } catch (error) {
-//         console.error("Error sending location to server:", error);
-//     }
-// };
-
-// // Request permission on component mount
-// useEffect(() => {
-//     requestLocationPermission();
-// }, []);
-
+    return () => clearInterval(locationTracking); // Clear interval on unmount
+  }, []);
 
 
   return (

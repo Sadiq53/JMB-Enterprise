@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleDeleteFile, resetState } from '../../../../redux/AdminDataSlice';
 import { useParams } from 'react-router-dom'
 import DeleteDataModal from './DeleteDataModal';
+import DashboardTags from '../../shared/DashboardTags/DashboardTags';
 
 const DeleteData = () => {
 
@@ -100,6 +101,7 @@ const showPopUp = () =>{
   return (
     <>
         <Header />
+      <DashboardTags />
         <div className="container my-5" >
       <div className="row">
         <div className="col-md-12">

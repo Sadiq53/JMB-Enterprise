@@ -3,6 +3,7 @@ import Header from '../../shared/Header/Header'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { handleAddAction, resetState } from '../../../../redux/AdminDataSlice';
+import DashboardTags from '../../shared/DashboardTags/DashboardTags';
 
 const ActionList = () => {
 
@@ -79,6 +80,8 @@ const ActionList = () => {
   return (
     <>
         <Header />
+      <DashboardTags />
+
         {/* <button onClick={console.log(actionData)}>ok</button> */}
         <div className="container-fluid my-5">
         <div className="row">

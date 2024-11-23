@@ -4,6 +4,7 @@ import {useFormik} from 'formik'
 import AddBankSchema from '../../../../schema/AddBankSchema'
 import { useDispatch, useSelector } from 'react-redux'
 import { handleAddBankData, resetState } from '../../../../redux/AdminDataSlice'
+import DashboardTags from '../../shared/DashboardTags/DashboardTags'
 
 const AddBank = () => {
 
@@ -60,6 +61,7 @@ const AddBank = () => {
   return (
     <>
         <Header />
+        <DashboardTags />
 
         <div className="container my-5" >
       <div className="row">

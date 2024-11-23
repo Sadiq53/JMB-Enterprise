@@ -205,9 +205,9 @@ const Header = () => {
           </NavLink>
           <ul className={`pc-submenu ${isMobile && openSubMenu === 'location' ? 'open' : ''}`}>
             <li className="pc-item">
-              <NavLink className="pc-link list-flex" to="/members-list">
+              <NavLink className="pc-link list-flex" to="/members-location">
                 <img src="/assets/images/menu-icons/members list.png" alt="Members List" />
-                Members List
+                Members Location
               </NavLink>
             </li>
           </ul>

@@ -6,6 +6,7 @@ import { handleAddMemberData, resetState } from '../../../../redux/AdminDataSlic
 import { useDispatch, useSelector } from 'react-redux'
 import Toast from '../../shared/Toast/Toast'
 import { NavLink } from 'react-router-dom'
+import DashboardTags from '../../shared/DashboardTags/DashboardTags'
 
 const AddMembers = () => {
 
@@ -74,6 +75,7 @@ const AddMembers = () => {
   return (
     <>
       <Header />
+      <DashboardTags />
 
     <div className="container my-5" >
       <div className="row">
