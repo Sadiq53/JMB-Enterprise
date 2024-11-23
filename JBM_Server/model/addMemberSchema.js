@@ -7,6 +7,11 @@ const addMember = mongoose.Schema({
     member_phone : Number,
     member_email : String,
     address : String,
+    location: {
+        address: {type : String, default : ""},
+        latitude: {type : String, default : ""},
+        longitude: {type : String, default : ""},
+    },
     formatdate : {type : String, default : ""},
     createdat : {type : Date, default : ''},
     password : { type : String, default : "" }

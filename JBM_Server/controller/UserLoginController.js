@@ -39,47 +39,26 @@ route.get('/:id', async(req, res) => {
 })
 
 
-route.post('/location', async (req, res) => {
+route.post('/location/:id', async (req, res) => {
+    const { latitude, longitude } = req.body.location;
+    const stableId = req.params.id?.replace(":", "");
+    // console.log(stableId)
+        let ID = jwt.decode(stableId, key)
+    const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude},${longitude}&key=${process.env.apiKey}`;
+
     try {
-        const { location } = req.body;
-        console.log("Received location:", location);
-
-        // Destructure latitude and longitude from location
-        const { latitude, longitude } = location;
-
-        // Ensure valid latitude and longitude are provided
-        if (!latitude || !longitude) {
-            return res.status(400).json({ success: false, message: "Latitude and longitude are required." });
+        const response = await axios.get(url);
+        const address = response.data.results[0].formatted; // Get the formatted address
+        const location = {
+            address : address,
+            latitude: latitude,
+            longitude: longitude
         }
-
-        // Call Google Maps Geocoding API
-        const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.GOOGLE_API_KEY}`;
-        const response = await axios.get(apiUrl);
-
-        if (response.data.status === "OK" && response.data.results.length > 0) {
-            // Extract formatted address from the first result
-            const formattedAddress = response.data.results[0].formatted_address;
-
-            console.log("Formatted Address:", formattedAddress);
-
-            // Return the formatted address to the client
-            return res.status(200).json({
-                success: true,
-                address: formattedAddress,
-            });
-        } else {
-            console.error("Error from Google API:", response.data.error_message || response.data.status);
-            return res.status(500).json({
-                success: false,
-                message: response.data.error_message || "Unable to fetch address. Please try again later.",
-            });
-        }
+        await memberData.updateOne({_id : ID}, { location : location })
+        res.status(200).json({ success: true, address });
     } catch (error) {
-        console.error("Error while reverse geocoding:", error);
-        res.status(500).json({
-            success: false,
-            message: "An unexpected error occurred while processing your request.",
-        });
+        console.error('Error fetching address:', error.message);
+        res.status(500).json({ success: false, message: 'Unable to fetch address' });
     }
 });
 
