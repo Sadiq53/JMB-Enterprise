@@ -31,6 +31,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We use your location to track your activity.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We use your location to provide better services.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

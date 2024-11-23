@@ -1,3 +1,5 @@
+module.exports = (io) => {
+
 require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
 const route = require('express').Router();
@@ -8,6 +10,7 @@ const fs = require('fs');
 const xlsx = require('xlsx');
 const csv = require('csv-parser');
 const { exec } = require('child_process');
+require('dotenv').config(); 
 const multerS3 = require('multer-s3');
 const winston = require('winston')
 const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
@@ -382,6 +385,8 @@ route.get('/', async (req, res) => {
     // Wait for all promises to resolve
     const filesData = await Promise.all(filePromises);
 
+    // console.log("hello")
+
     // Send the combined data
     res.send({
       status: 200,
@@ -392,7 +397,6 @@ route.get('/', async (req, res) => {
     res.status(500).send("Internal server error.");
   }
 });
-
 
 route.put("/", async (req, res) => {
   if(req.body?.data?.action) {
@@ -454,7 +458,6 @@ route.put("/", async (req, res) => {
   }
 });
 
-
 // DELETE route to remove multiple files and their database records
 route.delete('/', async (req, res) => {
   const { IDs } = req.body;
@@ -506,5 +509,23 @@ route.delete('/', async (req, res) => {
   }
 });
 
+io.on('connection', (socket)=>{
+  console.log("new user is connected")
 
-module.exports = route;
+  // Listen for the 'upload' event
+  socket.on('upload', (data) => {
+    // console.log('File uploaded:', data);
+    console.log(data)
+    // Broadcast to all users
+    io.emit('fileUploaded', data);
+  });
+
+
+  socket.on('disconnect', () => {
+      console.log('User disconnected');
+  });
+
+});
+
+  return route;
+};

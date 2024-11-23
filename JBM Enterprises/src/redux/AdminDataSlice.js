@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import axios from "axios";
 import { API_URL } from "../util/API_URL";
 import {nanoid} from 'nanoid'
+import socket from '../util/Socket'
 
 
 const handleAddMemberData = createAsyncThunk('handleAddMemberData', async(formdata) =>{
@@ -94,8 +95,10 @@ const handleDeleteBank = createAsyncThunk('handleDeleteBank', async(formData) =>
 
 const handleData = createAsyncThunk('handleData', async(formData) =>{
     const response = await axios.post(`${API_URL}/data`, formData, { headers : { 'Content-Type' : 'multipart/form-data' } });
-    console.log(response.data)
+    // console.log(response.data)
     if(response.data.status === 200) {
+        console.log("hello")
+        socket.emit('upload', {success : true} )
         return response.data.filedata;
     } else {
         return 
@@ -104,7 +107,7 @@ const handleData = createAsyncThunk('handleData', async(formData) =>{
 
 const handleAddAction = createAsyncThunk('handleAddAction', async(formData)=>{
     const response = await axios.put(`${API_URL}/data`, { data : { action : formData } })
-    console.log(response.data)
+    // console.log(response.data)
     if(response.data.status === 200) {
         return formData
     } else { 

@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import AddDataSchema from '../../../../schema/AddDataSchema'
 import { handleData, resetState } from '../../../../redux/AdminDataSlice';
 import { API_URL } from '../../../../util/API_URL';
+import socket from '../../../../util/Socket'
 
 
 const AddData = () => {
@@ -58,9 +59,13 @@ const AddData = () => {
         //       console.log(`File Type: ${value.type}`);
         //       console.log(`File Size: ${value.size} bytes`);
         //   }}
+
         dispatch(handleData(vForm))
       }
     })
+
+
+
 
     useEffect(()=>{
       // console.log(isError)

@@ -26,4 +26,8 @@ const handleGetUserData = async(id) =>{
     return data?.result
 }
 
-export {handleGetData, handleGetUserData}
+const handlePostLocation = async(location) => {
+    await axios.post(`${API_URL}/login/location`, { location });
+}
+
+export {handleGetData, handlePostLocation, handleGetUserData}

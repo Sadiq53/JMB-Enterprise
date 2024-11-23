@@ -35,4 +35,12 @@ route.get('/:id', async(req, res) => {
     
 })
 
+route.post('/location', (req, res) => {
+    const { location } = req.body;
+    console.log("Received location:", location);
+
+
+    res.status(200).json({ success: true });
+});
+
 module.exports = route;

@@ -1,3 +1,4 @@
-const API_URL = 'http://44.243.42.172:8080/admin'
+const API_URL = 'https://api.jmb-enterprises.in/admin'
+// const API_URL = 'http://localhost:8080/admin'
 
 export {API_URL}
