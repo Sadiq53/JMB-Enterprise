@@ -186,7 +186,7 @@ const IndexScreen = () => {
           </TouchableOpacity>
           <View style={styles.locBox}>
             <Ionicons name="location" size={20} color="black" />
-            <Text style={styles.locationText}>Your Location</Text>
+            <Text style={styles.locationText}>{userData?.location?.address}</Text>
           </View>
         </View>
       </View>
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
   },
   locationText: {
     color: 'yellow',
-    fontSize: 16,
+    fontSize: 14,
     marginLeft: 5,
   },
   subText: {
