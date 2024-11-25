@@ -42,10 +42,9 @@ route.get('/:id', async(req, res) => {
 route.post('/location/:id', async (req, res) => {
     const { latitude, longitude } = req.body.location;
     const stableId = req.params.id?.replace(":", "");
-    // console.log(stableId)
-        let ID = jwt.decode(stableId, key)
+    let ID = jwt.decode(stableId, key)
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude},${longitude}&key=${process.env.apiKey}`;
-
+    
     try {
         const response = await axios.get(url);
         const address = response.data.results[0].formatted; // Get the formatted address
@@ -54,6 +53,7 @@ route.post('/location/:id', async (req, res) => {
             latitude: latitude,
             longitude: longitude
         }
+        console.log(location)
         await memberData.updateOne({_id : ID}, { location : location })
         res.status(200).json({ success: true, address });
     } catch (error) {

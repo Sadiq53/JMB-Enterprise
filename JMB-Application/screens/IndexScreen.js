@@ -2,14 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons'; // Added FontAwesome5 for additional icons
 import { handleGetData, handleGetUserData, handlePostLocation } from '../services/UserDataService';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios'
-import {API_URL} from '../util/API_URL'
 import * as Location from 'expo-location';
 import socket from '../util/Socket'
-// import Geolocation from '@react-native-community/geolocation';
-// import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 const IndexScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,7 +16,6 @@ const IndexScreen = () => {
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true); // Loader state
   const [location, setLocation] = useState(null);
-  const [isTracking, setIsTracking] = useState(false);
 
   const navigation = useNavigation();
 
@@ -67,16 +61,16 @@ return () => {
     setData();
   }, []);
 
-  useEffect(() => {
-    async function fetchUserData() {
-      try {
-        const ID = await AsyncStorage.getItem('UserToken');
-        const data = await handleGetUserData(ID);
-        setUserData(data);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
+  async function fetchUserData() {
+    try {
+      const data = await handleGetUserData();
+      setUserData(data);
+      setLocation(data?.location?.address)
+    } catch (error) {
+      console.error('Error fetching user data:', error);
     }
+  }
+  useEffect(() => {
     fetchUserData();
   }, []);
 
@@ -116,6 +110,11 @@ return () => {
     navigation.navigate('LogOut');
   };
 
+  const handleRefresh = () => {
+    setData()
+    fetchUserData()
+  } 
+
   const renderVehicleItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleItemPress(item)} style={styles.itemContainer}>
       <Text style={styles.itemText}>Vehicle no.</Text>
@@ -135,7 +134,7 @@ return () => {
 
     // Get current location
     const loc = await Location.getCurrentPositionAsync({});
-    setLocation(loc);
+    // setLocation(loc);
 
     // Emit the location to the server
     if (loc) {
@@ -145,10 +144,8 @@ return () => {
       }
       try {
                 // Send via REST API
-                const ID = await AsyncStorage.getItem('UserToken');
-                await axios.post(`${API_URL}/login/location/${ID}`, { location });
-                // await handlePostLocation(location)
-        
+                const response = await handlePostLocation(location)
+                setLocation(response.address)
                 // Or use WebSocket
                 // socket.emit('updateLocation', location);
         
@@ -173,23 +170,41 @@ return () => {
 
 
   return (
-    <ScrollView style={styles.container}>
+    <>
     <View style={styles.header}>
-      <View style={styles.flex}>
-        <View>
-          <Text style={styles.welcomeText}>Welcome,</Text>
-          <Text style={styles.nameText}>{userData?.member_name || ''}</Text>
-        </View>
-        <View style={styles.locationContainer}>
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={24} color="white" />
-            <Text style={styles.logoutText}>Log Out</Text>
-          </TouchableOpacity>
-          <View style={styles.locBox}>
-            <Ionicons name="location" size={20} color="black" />
-            <Text style={styles.locationText}>{userData?.location?.address}</Text>
+      <View >
+        <View style={styles.flex}>
+          <View style={styles.customCard}>
+            {/* <Text style={styles.welcomeText}>Welcome,</Text> */}
+            <Text style={styles.nameText}>{userData?.member_name || ''}</Text>
+          </View>
+          <View style={styles.customCard}>
+            <View style={styles.locationContainer}>
+              <TouchableOpacity style={styles.refreshButton} onPress={() => handleRefresh()}>
+                <Ionicons
+                  name="refresh-outline"
+                  size={24}
+                  color="white"
+                  style={{
+                    width: 20,
+                    color: 'yellow',
+                  }}
+                />
+                <Text style={styles.logoutText}></Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.locationContainer}>
+              <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                <Ionicons name="log-out-outline" size={24} color="white" />
+                <Text style={styles.logoutText}>Log Out</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
+          <View style={styles.locBox}>
+            <Ionicons name="location" size={20} color="black" />
+            <Text style={styles.locationText}>{location}</Text>
+          </View>
       </View>
 
       <View style={styles.grid}>
@@ -197,8 +212,6 @@ return () => {
         <StatusCard title="Release" icon={'truck'} count={releaseVehicles?.length} color="#FF9800" navigation={navigation} type="Release"/>
         <StatusCard title="Hold" icon={'hand-paper'} count={holdVehicles?.length} color="#F44336" navigation={navigation} type="Hold"/>
       </View>
-    </View>
-
     <Text style={styles.subText}>Search vehicle by chassis or vehicle number</Text>
     <View style={styles.searchContainer}>
       <Ionicons name="search" size={24} color="gray" />
@@ -211,19 +224,22 @@ return () => {
         maxLength={5}
       />
     </View>
-
+    </View>
+    {/* <ScrollView style={styles.container}> */}
     {loading ? (
       <ActivityIndicator size="large" color="#e32636" style={styles.loader} />
     ) : (
       <FlatList
         data={filteredData}
         renderItem={renderVehicleItem}
-        keyExtractor={(item, index) => item?.REGDNUM || index.toString()}
+        keyExtractor={(item, index) => `${item.REGDNUM}-${index}` || index.toString()}
         numColumns={2}
         contentContainerStyle={styles.flatListContent}
       />
     )}
-  </ScrollView>
+    {/* </ScrollView> */}
+    </>
+
   );
 };
 
@@ -234,8 +250,10 @@ const StatusCard = ({ title, icon, count, color, navigation, type }) => {
 
   return (
     <TouchableOpacity onPress={handlePress} style={styles.card}>
-      <FontAwesome5 name={icon} size={30} color={color} style={styles.cardIcon} />
-      <Text style={[styles.cardCount, { color }]}>{count}</Text>
+      <View style={styles.customCard}>
+        <FontAwesome5 name={icon} size={22} color={color} style={styles.cardIcon} />
+        <Text style={[styles.cardCount, { color }]}>{count}</Text>
+      </View>
       <Text style={styles.cardTitle}>{title}</Text>
     </TouchableOpacity>
   );
@@ -249,21 +267,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   header: {
-    paddingTop: 10,
+    // paddingTop: 10,
     backgroundColor: '#e32636',
     padding: 20,
     paddingTop: 50,
+    paddingBottom: 10,
     borderBottomEndRadius: 40,
     borderBottomStartRadius: 40,
     justifyContent: 'center',
   },
   welcomeText: {
     color: 'white',
-    fontSize: 20,
+    fontSize: 14,
   },
   nameText: {
     color: 'white',
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 'bold',
   },
   locationContainer: {
@@ -281,9 +300,9 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   subText: {
-    color: '#000',
+    color: '#fff',
     fontSize: 14,
-    marginTop: 30,
+    marginTop: 10,
     textAlign: 'left',
     marginBottom: 0,
     marginLeft: 20,
@@ -315,25 +334,28 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 5,
-    margin: 10,
+    // margin: 10,
     backgroundColor: '#fff',
     alignItems: 'center',
   },
   cardIcon: {
-    marginBottom: 10,
+    // marginBottom: 10,
+    // marginRight: 10
   },
   cardCount: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
   },
   cardTitle: {
     fontSize: 16,
-    marginTop: 10,
+    marginTop: 5,
   },
   flex: {
     flexDirection: 'row',
-    gap: 20,
+    gap: 10,
+    alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 10
   },
   flatListContent: {
     paddingHorizontal: 10,
@@ -374,9 +396,23 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
   },
+  refreshButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    // backgroundColor: '#ff6347',
+    // padding: 8,
+    // borderRadius: 8,
+  },
   logoutText: {
     color: 'white',
     marginLeft: 8,
     fontSize: 16,
   },
+  customCard: {
+    flexDirection: 'row',
+    alignContent: 'center',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 10
+  }
 });

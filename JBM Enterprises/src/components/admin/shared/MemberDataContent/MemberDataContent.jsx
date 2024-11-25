@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import {NavLink} from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import ViewPassModal from '../../feature/Manage-Members/ViewPassModal'
 import DeleteMemberModal from '../../feature/Manage-Members/DeleteMemberModal'
+import { handleGetAllData } from '../../../../redux/AdminDataSlice'
 
 const MemberDataContent = (props) => {
 
   const [finalData, setFinalData] = useState([]);
+  const dispatch = useDispatch();
   const tableContainerRef = useRef(null); // Use useRef to reference the container
   const [isDown, setIsDown] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -101,6 +103,10 @@ const MemberDataContent = (props) => {
     }
   }
 
+  const refreshMembers = () => {
+    dispatch(handleGetAllData())
+  }
+
 
 
   return (
@@ -111,7 +117,10 @@ const MemberDataContent = (props) => {
           <div className="col-md-12">
           <div className="card">
   <div className="card-header">
-    <h3>Members List</h3>
+    <div className="custom-header">
+      <h3>Members List</h3>
+      {type === 'location' && (<button className='btn' onClick={refreshMembers}><i class="fa-solid fa-arrows-rotate fa-xl"></i></button>)}
+    </div>
   </div>
   <div className="card-body">
     <div className="dt-responsive table-responsive">

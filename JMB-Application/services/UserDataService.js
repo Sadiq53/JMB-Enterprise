@@ -1,4 +1,6 @@
 import { API_URL } from '../util/API_URL'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios'
 
 
 
@@ -14,8 +16,9 @@ const handleGetData = async() =>{
     return filteredData;
 }
 
-const handleGetUserData = async(id) =>{
-    const response = await fetch(`${API_URL}/login/:${id}`, {
+const handleGetUserData = async() =>{
+    const ID = await AsyncStorage.getItem('UserToken');
+    const response = await fetch(`${API_URL}/login/:${ID}`, {
         method : "GET"
     })
     if (!response.ok) {
@@ -27,7 +30,9 @@ const handleGetUserData = async(id) =>{
 }
 
 const handlePostLocation = async(location) => {
-    await axios.post(`${API_URL}/login/location`, { location });
+    const ID = await AsyncStorage.getItem('UserToken');
+    const response = await axios.post(`${API_URL}/login/location/${ID}`, { location });
+    return response.data
 }
 
 export {handleGetData, handlePostLocation, handleGetUserData}

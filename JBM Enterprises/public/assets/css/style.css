@@ -31700,6 +31700,12 @@ opacity: .7;
   cursor: grabbing;
 }
 
+.custom-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 
 /**  =====================
   36. Customizer css end
