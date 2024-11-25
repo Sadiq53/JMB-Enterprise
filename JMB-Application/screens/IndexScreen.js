@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios'
 import {API_URL} from '../util/API_URL'
 import * as Location from 'expo-location';
+import socket from '../util/Socket'
 // import Geolocation from '@react-native-community/geolocation';
 // import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
@@ -25,46 +26,46 @@ const IndexScreen = () => {
   const navigation = useNavigation();
 
 
-//   useEffect(()=>{
+  useEffect(()=>{
 
-//     // Listen for follow request accepted event
-// socket.on('fileUploaded', ( data ) => {
-//   // Update the button text to "Followed"
-//     const {success} = data 
-//     success && setData() 
+    // Listen for follow request accepted event
+socket.on('fileUploaded', ( data ) => {
+  // Update the button text to "Followed"
+    const {success} = data 
+    success && setData() 
   
-// });
+});
 
-// return () => {
-//     // Cleanup listeners on component unmount
-//     socket.off('fileUploaded');
-// };
-// }, [socket])
+return () => {
+    // Cleanup listeners on component unmount
+    socket.off('fileUploaded');
+};
+}, [socket])
 
-//   // Fetch data when the component mounts
-//   async function setData() {
-//     setLoading(true); // Start the loader
-//     try {
-//       const data = await handleGetData();
-//       const files = data.map(({ data }) => data).flat();
-//       setRawFileData(files);
-//       setFilteredData(files); // Initialize filtered data with all vehicles
+  // Fetch data when the component mounts
+  async function setData() {
+    setLoading(true); // Start the loader
+    try {
+      const data = await handleGetData();
+      const files = data.map(({ data }) => data).flat();
+      setRawFileData(files);
+      setFilteredData(files); // Initialize filtered data with all vehicles
 
-//       const holdFileData = files?.filter(value => value.ACTION === 'Hold');
-//       const releaseFileData = files?.filter(value => value.ACTION === 'Release');
-//       const yardFileData = files?.filter(value => value.ACTION === 'In Yard');
-//       setHoldVehicles(holdFileData);
-//       setReleaseVehicles(releaseFileData);
-//       setInYardVehicles(yardFileData);
-//     } catch (error) {
-//       console.error('Error fetching data:', error);
-//     } finally {
-//       setLoading(false); // Stop the loader
-//     }
-//   }
-//   useEffect(() => {
-//     setData();
-//   }, []);
+      const holdFileData = files?.filter(value => value.ACTION === 'Hold');
+      const releaseFileData = files?.filter(value => value.ACTION === 'Release');
+      const yardFileData = files?.filter(value => value.ACTION === 'In Yard');
+      setHoldVehicles(holdFileData);
+      setReleaseVehicles(releaseFileData);
+      setInYardVehicles(yardFileData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false); // Stop the loader
+    }
+  }
+  useEffect(() => {
+    setData();
+  }, []);
 
   useEffect(() => {
     async function fetchUserData() {
