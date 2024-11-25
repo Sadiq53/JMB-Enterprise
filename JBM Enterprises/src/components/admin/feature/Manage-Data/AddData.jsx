@@ -5,8 +5,6 @@ import { useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux';
 import AddDataSchema from '../../../../schema/AddDataSchema'
 import { handleData, resetState } from '../../../../redux/AdminDataSlice';
-import { API_URL } from '../../../../util/API_URL';
-import socket from '../../../../util/Socket'
 import DashboardTags from '../../shared/DashboardTags/DashboardTags';
 
 
