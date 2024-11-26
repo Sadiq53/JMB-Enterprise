@@ -163,7 +163,7 @@ return () => {
     // Track location updates in the background
     const locationTracking = setInterval(() => {
       getUserLocation();
-    }, 30000); // Update every 30 seconds
+    }, 900000); // Update every 15min
 
     return () => clearInterval(locationTracking); // Clear interval on unmount
   }, []);
