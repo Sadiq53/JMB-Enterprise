@@ -4,7 +4,7 @@ import "./App.css";
 function App() {
   const downloadAPK = () => {
     // Trigger the download by pointing to the APK file in the public directory
-    window.location.href = "/application-978b1869-9ea0-48ca-8adf-e21d91340e19.apk";
+    window.location.href = "/jmb.apk";
   };
 
   return (
