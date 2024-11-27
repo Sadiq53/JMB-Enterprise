@@ -1,69 +1,80 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Assuming you're using Expo. If not, you can use react-native-vector-icons
 import { useNavigation } from '@react-navigation/native';
 
 const VehicleDetailScreen = ({ route }) => {
 
-    const rawData = route.params
-    const [userData, setUserData] = useState([])
-    const navigation = useNavigation(); // Initialize navigation hook
+  const rawData = route.params
+  const [userData, setUserData] = useState([])
+  const navigation = useNavigation(); // Initialize navigation hook
 
-    useEffect(()=>{
-        // console.log(rawData)
-        setUserData(rawData?.fileData)
-    }, [])
+  useEffect(() => {
+    // console.log(rawData)
+    setUserData(rawData?.fileData)
+  }, [])
+
+  // Function to handle the call
+  const handleCall = () => {
+    const phoneNumber = 9926605555 || ''; // Replace with the desired phone number key
+    if (phoneNumber) {
+      Linking.openURL(`tel:${phoneNumber}`);
+    } else {
+      alert("Phone number is not available!");
+    }
+  };
+
 
   return (
-     <>
-         {/* Header */}
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={()=>{navigation.navigate('Home')}}>
-        <Ionicons name="arrow-back" size={30} color="white" style={styles.backIcon} />
-        </TouchableOpacity>
-        <View>
-        <Text style={styles.headerTitle1}>
-          <Text style={styles.headerId}>{userData?.REGDNUM}</Text> 
-        </Text>
-        <Text style={styles.headerTitle}>{userData?.CUSTOMERNAME}</Text>
+    <>
+      {/* Header */}
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => { navigation.navigate('Home') }}>
+            <Ionicons name="arrow-back" size={30} color="white" style={styles.backIcon} />
+          </TouchableOpacity>
+          <View>
+            <Text style={styles.headerTitle1}>
+              <Text style={styles.headerId}>{userData?.REGDNUM}</Text>
+            </Text>
+            <Text style={styles.headerTitle}>{userData?.CUSTOMERNAME}</Text>
+          </View>
+          <View>
+            <View style={styles.actionLay}>
+              <Text style={styles.actionLabel}>Hold : </Text>
+              <Text style={styles.actionValue}>{userData?.HOLD !== 'empty' ? userData?.HOLD : "---"}</Text>
+            </View>
+            <View style={styles.actionLay}>
+              <Text style={styles.actionLabel}>Release : </Text>
+              <Text style={styles.actionValue}>{userData?.RELEASE !== 'empty' ? userData?.RELEASE : "---"}</Text>
+            </View>
+            <View style={styles.actionLay}>
+              <Text style={styles.actionLabel}>In Yard : </Text>
+              <Text style={styles.actionValue}>{userData?.IN_YARD !== 'empty' ? userData?.IN_YARD : "---"}</Text>
+            </View>
+          </View>
         </View>
-        <View>
-          <View style={styles.actionLay}>
-          <Text style={styles.actionLabel}>Hold : </Text>
-          <Text style={styles.actionValue}>{userData?.HOLD !== 'empty' ? userData?.HOLD : "---"}</Text>
-          </View>
-          <View style={styles.actionLay}>
-          <Text style={styles.actionLabel}>Release : </Text>
-          <Text style={styles.actionValue}>{userData?.RELEASE !== 'empty' ? userData?.RELEASE : "---"}</Text>
-          </View>
-          <View style={styles.actionLay}>
-          <Text style={styles.actionLabel}>In Yard : </Text>
-          <Text style={styles.actionValue}>{userData?.IN_YARD !== 'empty' ? userData?.IN_YARD : "---"}</Text>
-          </View>
-        </View>
-      </View>
 
-      {/* Vehicle Details */}
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* <View style={styles.detailsContainer}> */}
+        {/* Vehicle Details */}
+        <ScrollView contentContainerStyle={styles.content}>
+          {/* <View style={styles.detailsContainer}> */}
           <View style={styles.detailRow1}>
             <View>
-                <View style={{flexDirection : "row", alignItems : "center", justifyContent : "flex-start"}}>
-                    <Ionicons name="location" size={24} color="red" /><Text style={styles.label}> BRANCH</Text>
-                </View>
-                <Text style={styles.value}>{userData?.BRANCH}</Text>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start" }}>
+                <Ionicons name="location" size={24} color="red" /><Text style={styles.label}> BRANCH</Text>
+              </View>
+              <Text style={styles.value}>{userData?.BRANCH}</Text>
             </View>
             <View>
-                <Text style={styles.label}>BANK NAME</Text>
-                <Text style={styles.value}>{userData?.BANK}</Text>
+              <Text style={styles.label}>BANK NAME</Text>
+              <Text style={styles.value}>{userData?.BANK}</Text>
             </View>
           </View>
 
           <View style={styles.detailRow2}>
             <View>
-                <Text style={styles.agreementLabel}>AGREEMENT TO</Text>
-                <Text style={styles.agreementValue}>{userData?.AGREEMENTNO}</Text>
+              <Text style={styles.agreementLabel}>AGREEMENT TO</Text>
+              <Text style={styles.agreementValue}>{userData?.AGREEMENTNO}</Text>
             </View>
           </View>
 
@@ -93,10 +104,17 @@ const VehicleDetailScreen = ({ route }) => {
             <Text style={styles.label}>ENGINE NO:</Text>
             <Text style={styles.value}>{userData?.ENGINENUM}</Text>
           </View>
-        {/* </View> */}
-      </ScrollView>
-    </View>
-     </>
+          {/* </View> */}
+          {/* Call Card */}
+          <View style={styles.callCard}>
+            <TouchableOpacity style={styles.callButton} onPress={handleCall}>
+              <Ionicons name="call" size={24} color="white" />
+              <Text style={styles.callText}>Call: 9926605555</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </View>
+    </>
   );
 };
 
@@ -104,8 +122,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#d32f2f',
-},
-header: {
+  },
+  header: {
     backgroundColor: '#d32f2f', // Red color
     paddingVertical: 40,
     paddingHorizontal: 20,
@@ -113,11 +131,11 @@ header: {
     alignItems: 'left',
     // borderBottomEndRadius: 40,
     // borderBottomStartRadius: 40,
-    gap : 20
+    gap: 20
   },
   backIcon: {
     marginRight: 15,
-},
+  },
   headerTitle: {
     fontSize: 20,
     color: 'white',
@@ -129,43 +147,43 @@ header: {
     fontWeight: 'bold',
   },
   headerId: {
-      color: '#FFD700', // Yellow color
-    },
+    color: '#FFD700', // Yellow color
+  },
   content: {
-    borderTopEndRadius : 40,
-    borderTopStartRadius : 40,
+    borderTopEndRadius: 40,
+    borderTopStartRadius: 40,
     padding: 20,
-    backgroundColor : "#fff"
+    backgroundColor: "#fff"
   },
   detailsContainer: {
     backgroundColor: '#f0f0f0',
     padding: 15,
     borderRadius: 10,
-    flex : 1
+    flex: 1
   },
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
     // borderBottomWidth : 1,
-    paddingVertical : 10
+    paddingVertical: 10
   },
   detailRow1: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
-    borderBottomWidth : 1,
-    paddingVertical : 10,
-    borderColor : "#ccc"
+    borderBottomWidth: 1,
+    paddingVertical: 10,
+    borderColor: "#ccc"
   },
   detailRow2: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     // marginBottom: 10,
-    borderBottomWidth : 1,
+    borderBottomWidth: 1,
     // paddingVertical : 10,
-    borderColor : "#ccc",
-    paddingTop  : 20
+    borderColor: "#ccc",
+    paddingTop: 20
   },
   label: {
     fontSize: 18,
@@ -175,7 +193,7 @@ header: {
   value: {
     fontSize: 18,
     color: '#000',
-    textAlign : "left"
+    textAlign: "left"
   },
   agreementLabel: {
     fontSize: 18,
@@ -186,7 +204,7 @@ header: {
     fontSize: 18,
     color: '#000',
     marginBottom: 20,
-    fontWeight : "bold"
+    fontWeight: "bold"
   },
   sectionHeader: {
     fontSize: 18,
@@ -204,21 +222,43 @@ header: {
     backgroundColor: 'white',
   },
   actionLay: {
-    flexDirection : "row",
-    gap : 10,
-    alignItems : "center"
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center"
   },
   actionLabel: {
     fontSize: 16,
     color: '#fff',
     fontWeight: 'bold',
-    textAlign : "left"
+    textAlign: "left"
   },
   actionValue: {
     fontSize: 16,
     color: '#fff',
-    textAlign : "left"
-  }
+    textAlign: "left"
+  },
+  callCard: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderColor: '#ccc',
+},
+callButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#d32f2f',
+    padding: 10,
+    borderRadius: 8,
+    gap: 8,
+},
+callText: {
+    fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
+},
 });
 
 export default VehicleDetailScreen;
