@@ -2,6 +2,20 @@
   "expo": {
     "name": "JMB-Application",
     "slug": "JMB-Application",
+    "orientation": "portrait",
+    "icon": "./assets/jmb.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/jmb.png", 
+      "resizeMode": "contain",       
+      "backgroundColor": "#ffffff" 
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/jmb.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
     "version": "1.0.0",
     "extra": {
       "eas": {
