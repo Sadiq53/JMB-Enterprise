@@ -14,7 +14,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/jmb.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.kripalsingh.jmbapk"
     },
     "version": "1.0.0",
     "extra": {
