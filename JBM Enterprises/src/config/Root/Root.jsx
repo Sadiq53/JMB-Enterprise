@@ -9,6 +9,7 @@ import ManageDashTags from '../../components/admin/feature/Manage-Data/ManageDas
 import DeleteData from '../../components/admin/feature/Manage-Data/DeleteData'
 import ActionList from '../../components/admin/feature/Manage-Data/ActionList'
 import Location from '../../components/admin/feature/Location/Location'
+import DataListContent from '../../components/admin/shared/DataListContent/DataListContent'
 // import Error404 from '../../components/admin/feature/404/Error404'
 // import Demo from '../../components/admin/feature/Demo'
 
@@ -38,6 +39,10 @@ import Location from '../../components/admin/feature/Location/Location'
         {
             path : 'add-data',
             element : <AddData />
+        },
+        {
+            path : 'data/:fileName',
+            element : <DataListContent props={'dashboard'} />
         },
         {
             path : 'data-list',

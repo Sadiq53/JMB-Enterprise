@@ -1,8 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleAddAction, resetState } from '../../../../redux/AdminDataSlice';
+import { useParams } from 'react-router-dom';
+import Header from '../Header/Header';
+import DashboardTags from '../DashboardTags/DashboardTags';
 
 const DataListContent = (props) => {
+  const param = useParams();
+  const {fileName} = param;
   const [onlyFileData, setOnlyFileData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [dataPerView, setDataPerView] = useState(50);
@@ -75,33 +80,38 @@ const DataListContent = (props) => {
   
   // Update breakDownFIleData based on filters
   useEffect(() => {
+    let filteredData;
     if(!RawFileData?.error) {
-      let filteredData = RawFileData;
-
-    if (changeFileOnName && changeFileOnName !== 'Select List') {
-      filteredData = filteredData.filter(value => value?.name === changeFileOnName);
-    }
-
-    if (changeFileOnBank && changeFileOnBank !== 'Select Bank') {
-      filteredData = filteredData.filter(value => value?.bank_name === changeFileOnBank);
-    }
-
-    if (changeFileOnDate !== '' && changeFileOnDate !== 'Select Month Year') {
-      const [selectedMonth, selectedYear] = changeFileOnDate.split(" ");
-      filteredData = filteredData.filter(value => {
-        const date = new Date(value.uploaddate);
-        return (
-          date.getFullYear() === parseInt(selectedYear) &&
-          date.toLocaleString('default', { month: 'long' }) === selectedMonth
-        );
-      });
-    }
-    
-    const data = filteredData.map(({ data }) => data).flat();
-    setBreakDownFIleData(data);
+      if(fileName) {
+        filteredData = RawFileData?.filter(value => value.name === fileName);
+      } else {
+        filteredData = RawFileData;
+      }
     } else {
       setMessage("Please Try Again Later.....")
     }
+
+  if (changeFileOnName && changeFileOnName !== 'Select List') {
+    filteredData = filteredData.filter(value => value?.name === changeFileOnName);
+  }
+
+  if (changeFileOnBank && changeFileOnBank !== 'Select Bank') {
+    filteredData = filteredData.filter(value => value?.bank_name === changeFileOnBank);
+  }
+
+  if (changeFileOnDate !== '' && changeFileOnDate !== 'Select Month Year') {
+    const [selectedMonth, selectedYear] = changeFileOnDate.split(" ");
+    filteredData = filteredData.filter(value => {
+      const date = new Date(value.uploaddate);
+      return (
+        date.getFullYear() === parseInt(selectedYear) &&
+        date.toLocaleString('default', { month: 'long' }) === selectedMonth
+      );
+    });
+  }
+  
+  const data = filteredData.map(({ data }) => data).flat();
+  setBreakDownFIleData(data);
   }, [RawFileData, changeFileOnName, changeFileOnBank, changeFileOnDate]);
   
   //--------------------Upadte data by Filters-------------------------------
@@ -192,6 +202,14 @@ const DataListContent = (props) => {
   
   return (
     <>
+    {
+      fileName && (
+        <>
+          <Header />
+          <DashboardTags />
+        </>
+      )
+    }
       {/* <button onClick={() => console.log(groupedDates)}>Show Dates</button> */}
       <div className="container-fluid my-5">
         <div className="row">

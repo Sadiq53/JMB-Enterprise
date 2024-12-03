@@ -26,7 +26,7 @@ const AddData = () => {
 
   const handleFileUpload = (e) =>{
     let chckFormat = e.name?.split(".")
-    if(chckFormat?.at(-1) != "xlsx" && chckFormat?.at(-1) != "csv") {
+    if(chckFormat?.at(-1) != "xlsx") {
       setCheckFileFormat(1)
     } else {
       setIsFileEmpty(false)
@@ -124,7 +124,7 @@ const AddData = () => {
                   <input
                     name="upload_file" 
                     type="file"
-                    accept=".csv, .xlsx"
+                    accept=".xlsx"
                     onChange={(event) => {
                     handleFileUpload(event.currentTarget.files[0]); addDataForm.handleChange(event)
                     }} ref={chckFile}
