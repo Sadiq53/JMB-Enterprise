@@ -67,6 +67,13 @@ const showPopUp = () =>{
   }
 }
 
+const handleSearchChange = (event) => {
+  const query = event.target.value.toLowerCase();
+  setSearchQuery(query);
+  const filtered = breakDownFIleName.filter((name) => name.toLowerCase().includes(query));
+  setFilteredFileNames(filtered);
+};
+
   useEffect(()=>{
     setDeletFiles([])
   }, [RawFileData])
@@ -114,6 +121,15 @@ const showPopUp = () =>{
             </div>
             <button ref={resetForm} style={{visibility : "hidden"}} type='reset'></button>
             <div className="card-body">
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search by file name..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                  />
+                </div>
                 {
                   showAlert ? <div className="alert alert-success text-success">{alertMsg}</div> : null
                 }
