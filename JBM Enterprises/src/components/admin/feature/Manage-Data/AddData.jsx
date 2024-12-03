@@ -114,7 +114,7 @@ const AddData = () => {
           <div className="card">
             <div className="card-header">
               <h3>Add Data</h3>
-              <a href="./public/assets/samplefiles/sample_sheet.xlsx" download='Sample-File.xlsx'>Download Sample File</a>
+              <a href="/assets/samplefiles/sample_sheet.xlsx" download='Sample-File.xlsx'>Download Sample File</a>
             </div>
             <form onSubmit={addDataForm.handleSubmit}>
             <button ref={resetForm} style={{visibility : "hidden"}} type='reset'></button>
