@@ -16,6 +16,7 @@ const DeleteData = () => {
   const isError = useSelector(state => state.AdminDataSlice?.isError);
   const isFullfilled = useSelector(state => state.AdminDataSlice?.isFullfilled);
   const [breakDownFIleName, setBreakDownFIleName] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [deleteFiles, setDeletFiles] = useState([])
   const resetForm = useRef();
 
