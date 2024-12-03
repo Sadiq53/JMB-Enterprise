@@ -17,6 +17,7 @@ const DeleteData = () => {
   const isFullfilled = useSelector(state => state.AdminDataSlice?.isFullfilled);
   const [breakDownFIleName, setBreakDownFIleName] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filteredFileNames, setFilteredFileNames] = useState([]);
   const [deleteFiles, setDeletFiles] = useState([])
   const resetForm = useRef();
 
@@ -80,7 +81,9 @@ const handleSearchChange = (event) => {
   }, [RawFileData])
 
   useEffect(()=>{
-    setBreakDownFIleName(RawFileData?.map(({ name }) => name));
+    const names = RawFileData?.map(({ name }) => name) ?? [];
+    setBreakDownFIleName(names);
+    setFilteredFileNames(names);
   }, [RawFileData, isFullfilled])
 
   useEffect(()=>{
@@ -145,7 +148,7 @@ const handleSearchChange = (event) => {
                             </thead>
                             <tbody>
                             {
-                              breakDownFIleName?.map((value) => (
+                              filteredFileNames?.map((value) => (
                                 <tr key={value}>
                                   <td className='d-flex justify-content-between align-items-center'>
                                     <NavLink to={`/data/${value}`} className="text-decoration-none">
