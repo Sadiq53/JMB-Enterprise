@@ -1,4 +1,4 @@
-module.exports = (io) => {
+module.exports = () => {
 
 require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
@@ -509,23 +509,6 @@ route.delete('/', async (req, res) => {
   }
 });
 
-io.on('connection', (socket)=>{
-  console.log("new user is connected")
-
-  // Listen for the 'upload' event
-  socket.on('upload', (data) => {
-    // console.log('File uploaded:', data);
-    console.log(data)
-    // Broadcast to all users
-    io.emit('fileUploaded', data);
-  });
-
-
-  socket.on('disconnect', () => {
-      console.log('User disconnected');
-  });
-
-});
 
   return route;
 };

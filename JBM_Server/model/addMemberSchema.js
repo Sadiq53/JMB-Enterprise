@@ -12,6 +12,8 @@ const addMember = mongoose.Schema({
         latitude: {type : String, default : ""},
         longitude: {type : String, default : ""},
     },
+    socketid: { type : String, default : "" }, 
+    token: { type : String, default : "" },
     formatdate : {type : String, default : ""},
     createdat : {type : Date, default : ''},
     password : { type : String, default : "" }

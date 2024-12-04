@@ -120,7 +120,7 @@ const DashboardTags = () => {
         <NavLink to={`/delete-data/${'show-data'}`}>
         <div className="card statistics-card-1">
         <div className="card-header d-flex align-items-center justify-content-between py-3">
-            <h5>File Uploads</h5>
+            <h5>All File</h5>
         </div>
         <div className="card-body">
             <img

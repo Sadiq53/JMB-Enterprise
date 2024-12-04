@@ -1,8 +1,10 @@
-const route = require('express').Router();
-const memberData = require('../model/addMemberSchema');
-const axios = require('axios')
-const jwt = require('jsonwebtoken')
-require('dotenv').config(); 
+module.exports = (io) => {
+
+    const route = require('express').Router();
+    const memberData = require('../model/addMemberSchema');
+    const axios = require('axios')
+    const jwt = require('jsonwebtoken')
+    require('dotenv').config(); 
 
 
 const key = 'User Authentication'
@@ -24,10 +26,19 @@ route.post('/', async(req, res) => {
     }
 })
 
+route.put('/:id', async(req, res) => {
+    const stableId = req.params.id?.replace(":", "");
+    // console.log(stableId)
+    let ID = jwt.decode(stableId, key)
+    // console.log(ID)
+    await memberData.updateOne({_id : ID}, { $set : { token : "" } })
+    res.status(200).set('Content-Type', 'text/plain').send({status : 200})
+})
+
 route.get('/:id', async(req, res) => {
     const stableId = req.params.id?.replace(":", "");
     // console.log(stableId)
-        let ID = jwt.decode(stableId, key)
+    let ID = jwt.decode(stableId, key)
         // console.log(ID)
         let userData = await memberData.find({_id : ID})
         if(userData?.length != 0){
@@ -62,4 +73,37 @@ route.post('/location/:id', async (req, res) => {
     }
 });
 
-module.exports = route;
+
+io.on('connection', (socket) => {
+    console.log('New user connected');
+
+    socket.on('initiate', async ({ userId }) => {
+        try {
+            const decoded = jwt.verify(userId, key);
+            const user = await memberData.findOne({ _id: decoded.id });
+
+            if (user?.token) {
+                io.to(user?.socketid).emit('logout', { success: true });
+            } else {
+                await memberData.updateOne({ _id: decoded.id }, { $set: { token: userId } });
+            }
+
+            await memberData.updateOne({ _id: decoded.id }, { $set: { socketid: socket.id } });
+        } catch (error) {
+            console.error('Error in initiate event:', error.message);
+        }
+    });
+
+    socket.on('upload', (data) => {
+        console.log('File uploaded:', data);
+        io.emit('fileUploaded', data);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
+
+
+  return route
+}

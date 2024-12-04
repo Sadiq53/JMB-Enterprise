@@ -5,6 +5,7 @@ import { handleGetData, handleGetUserData, handlePostLocation } from '../service
 import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import socket from '../util/Socket'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const IndexScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,8 +20,14 @@ const IndexScreen = () => {
 
   const navigation = useNavigation();
 
+  const initiateSocketConnection = async() => {
+    const ID = await AsyncStorage.getItem('UserToken');
+    socket.emit('initiate', { userId : ID })
+  }
 
   useEffect(()=>{
+
+    initiateSocketConnection()
 
     // Listen for follow request accepted event
 socket.on('fileUploaded', ( data ) => {
@@ -30,9 +37,18 @@ socket.on('fileUploaded', ( data ) => {
   
 });
 
+socket.on('logout', ( data ) => {
+  // Update the button text to "Followed"
+    const {success} = data 
+  success && navigation.navigate('LogOut');
+  
+});
+
+
 return () => {
     // Cleanup listeners on component unmount
     socket.off('fileUploaded');
+    socket.off('logout');
 };
 }, [socket])
 
@@ -106,7 +122,7 @@ return () => {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async() => {
     navigation.navigate('LogOut');
   };
 

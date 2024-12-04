@@ -2,11 +2,18 @@ import React, { useEffect } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { handleLogout } from '../services/UserDataService';
 
 const LogoutScreen = () => {
   const navigation = useNavigation();
 
+  const removeToken = async() => {
+    return await handleLogout()
+  }
+
   useEffect(() => {
+
+
     const logout = async () => {
       try {
         // Remove the token from AsyncStorage
@@ -18,8 +25,10 @@ const LogoutScreen = () => {
       }
     };
 
-    // Call the logout function when the screen is mounted
-    logout();
+    const response = removeToken()
+    if(response.status === 200) {
+      logout();
+    }
   }, [navigation]);
 
   return (
