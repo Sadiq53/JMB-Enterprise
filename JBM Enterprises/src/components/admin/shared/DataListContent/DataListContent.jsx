@@ -110,7 +110,7 @@ const DataListContent = (props) => {
     });
   }
   
-  const data = filteredData.map(({ data }) => data).flat();
+  const data = filteredData?.map(({ data }) => data).flat();
   setBreakDownFIleData(data);
   }, [RawFileData, changeFileOnName, changeFileOnBank, changeFileOnDate]);
   
@@ -248,7 +248,7 @@ const DataListContent = (props) => {
                                     onChange={(event) => setChangeFileOnDate(event.target.value)}
                                     >
                                     <option>Select Month Year</option>
-                                    {Object.keys(groupedDates).map((key) => (
+                                    {Object.keys(groupedDates)?.map((key) => (
                                         <option key={key} value={key}>{key}</option>
                                     ))}
                                     </select>
@@ -342,7 +342,7 @@ const DataListContent = (props) => {
                           </thead>
                           <tbody>
                             {onlyFileData?.map((value, index) => {
-                              const ARMPHONE = value?.ARMNAME?.match(/\d+/g).join('');
+                              const ARMPHONE = value?.ARMNAME?.match(/\d+/g)?.join('');
                               const ARMNAME = value?.ARMNAME?.slice(0, -11)
                               return (
                                 <tr key={index}>
