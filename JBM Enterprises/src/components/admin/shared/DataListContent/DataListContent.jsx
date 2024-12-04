@@ -358,7 +358,7 @@ const DataListContent = (props) => {
                                   <td className="sorting_1">{value.MODELNUM}</td>
                                   <td className="sorting_1">{value.ASSETSDESC}</td>
                                   <td className="sorting_1">{ARMNAME}</td>
-                                  <td className="sorting_1">{ARMPHONE}</td>
+                                  <td className="sorting_1">{value.ARMPHONE ? value.ARMPHONE : ARMPHONE}</td>
                                   <td className="sorting_1">{value.HOLD}</td>
                                   <td className="sorting_1">{value.RELEASE}</td>
                                   <td className="sorting_1">{value.IN_YARD}</td>
