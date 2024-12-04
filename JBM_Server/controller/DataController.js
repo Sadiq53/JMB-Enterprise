@@ -1,8 +1,8 @@
-module.exports = () => {
+module.exports = (io) => {
 
+  const route = require('express').Router();
 require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
-const route = require('express').Router();
 const dataModel = require('../model/addDataSchema');
 const multer = require('multer');
 const path = require('path');
@@ -319,6 +319,7 @@ route.post("/", upload.any(), async (req, res) => {
 });
 
 route.get('/', async (req, res) => {
+  console.log("hello")
   try {
     // Fetch all file records from the database
     const allFileData = await dataModel.find();

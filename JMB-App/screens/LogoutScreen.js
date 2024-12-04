@@ -13,7 +13,6 @@ const LogoutScreen = () => {
 
   useEffect(() => {
 
-
     const logout = async () => {
       try {
         // Remove the token from AsyncStorage
@@ -26,9 +25,8 @@ const LogoutScreen = () => {
     };
 
     const response = removeToken()
-    if(response.status === 200) {
-      logout();
-    }
+    logout();
+
   }, [navigation]);
 
   return (

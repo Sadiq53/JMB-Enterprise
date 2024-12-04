@@ -8,6 +8,7 @@ import AppNavigator from '../navigation/AppNavigator'
 import AuthNavigator from '../navigation/AuthNavigator'
 import { useDispatch } from 'react-redux';
 import { handleGetData } from '../redux/UserDataSlice';
+import socket from '../util/Socket';
 
 const ModuleScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -29,6 +30,7 @@ const ModuleScreen = () => {
     dispatch(handleGetData())
     checkToken();
   }, []);
+
 
   if (isLoading) {
     return <ActivityIndicator size="large" color="#0000ff" />;

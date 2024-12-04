@@ -6,7 +6,7 @@ const { Server } = require('socket.io');
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://jmb-enterprises.in", // Allow your React app's origin
+        origin: "http://localhost:5173", // Allow your React app's origin
         methods: ["GET", "POST"], // Allowed methods
         allowedHeaders: ["Authorization"], // Headers you allow
         credentials: true // Allow cookies to be sent
@@ -15,7 +15,7 @@ const io = new Server(server, {
 const routes = require('./config/allRoutes')(io);
 
 app.use(cors({
-    origin: "https://jmb-enterprises.in",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true

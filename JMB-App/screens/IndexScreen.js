@@ -20,14 +20,7 @@ const IndexScreen = () => {
 
   const navigation = useNavigation();
 
-  const initiateSocketConnection = async() => {
-    const ID = await AsyncStorage.getItem('UserToken');
-    socket.emit('initiate', { userId : ID })
-  }
-
   useEffect(()=>{
-
-    initiateSocketConnection()
 
     // Listen for follow request accepted event
 socket.on('fileUploaded', ( data ) => {
