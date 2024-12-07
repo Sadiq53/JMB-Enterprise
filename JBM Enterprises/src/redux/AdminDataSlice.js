@@ -126,6 +126,7 @@ const initialState = {
     isFullfilled : false,
     isProcessing : false,
     isDataProcessing : false,
+    errorMsg: ''
 }
 
 const AdminDataSlice = createSlice({
@@ -247,8 +248,16 @@ const AdminDataSlice = createSlice({
                 state.isProcessing = false;
             } else {
                 state.isError = true;
+                state.errorMsg = 'Data Already Exist!!'
                 state.isProcessing = false;
             }
+        });
+        builder.addCase(handleData.rejected, (state, action)=>{
+            
+            state.isError = true;
+            state.errorMsg = 'An issue occur in uploading file'
+                state.isProcessing = false;
+            
         });
         builder.addCase(handleData.pending, (state, action)=>{
             state.isProcessing = true;

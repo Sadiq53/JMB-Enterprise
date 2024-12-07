@@ -17,6 +17,7 @@ const AddData = () => {
   const [alertMsg, setAlertMsg] = useState("");
   const [spinner, setSpinner] = useState(false);
   const isError = useSelector(state => state.AdminDataSlice.isError)
+  const errorMsg = useSelector(state => state.AdminDataSlice.errorMsg)
   const isFullfilled = useSelector(state => state.AdminDataSlice.isFullfilled)
   const isProcessing = useSelector(state => state.AdminDataSlice.isProcessing)
   let chckFile = useRef();
@@ -71,7 +72,7 @@ const AddData = () => {
       if(isError) {
         setSpinner(false)
         setShowAlert(true)
-        setAlertMsg("Data Already Exist!!")
+        setAlertMsg(errorMsg)
         setTimeout(()=>{
           setShowAlert(false)
           setAlertMsg("")
